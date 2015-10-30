@@ -1,0 +1,23 @@
+{
+	"name": "esports/grido-doctrine-utils",
+	"description": "Grido utils for Doctrine",
+	"homepage": "https://github.com/pt24/grido-doctrine-utils",
+	"authors": [
+		{
+			"name": "eSports",
+			"homepage": "http://www.esports.cz"
+		}
+	],
+	"require": {
+		"php": ">=5.6",
+		"doctrine/orm": "2.*",
+		"o5/grido": "2.*"
+	},
+	"require-dev": {
+		"nette/robot-loader": "2.*",
+		"nette/tester": "1.*"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	}
+}
