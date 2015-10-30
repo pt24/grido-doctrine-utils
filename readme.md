@@ -1,3 +1,3 @@
-# esports/eventing #
+# esports/grido-doctrine-utils #
 
-Eventy pro doménové eventy
+Utility pro Grid.
