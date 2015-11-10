@@ -21,8 +21,8 @@ class PropertyAccessorTest extends Tester\TestCase {
 		];
 
 		$accessor = new EntityArrayAccessor;
-		Assert::same('John', $accessor->getProperty($array, 'name'));
-		Assert::same('Connor', $accessor->getProperty($array, 'surname'));
+		Assert::same('John', $accessor->getValue($array, 'name'));
+		Assert::same('Connor', $accessor->getValue($array, 'surname'));
 	}
 
 	function testFetchInnerValue() {
@@ -39,10 +39,10 @@ class PropertyAccessorTest extends Tester\TestCase {
 
 		$accessor = new EntityArrayAccessor;
 
-		Assert::same('John', $accessor->getProperty($array, 'name'));
-		Assert::same('Connor', $accessor->getProperty($array, 'surname'));
-		Assert::same('john@connor.org', $accessor->getProperty($array, 'user.email'));
-		Assert::same(58, $accessor->getProperty($array, 'user.account.id'));
+		Assert::same('John', $accessor->getValue($array, 'name'));
+		Assert::same('Connor', $accessor->getValue($array, 'surname'));
+		Assert::same('john@connor.org', $accessor->getValue($array, 'user.email'));
+		Assert::same(58, $accessor->getValue($array, 'user.account.id'));
 	}
 
 	function testAccessToUndeclaredValue() {
@@ -57,12 +57,12 @@ class PropertyAccessorTest extends Tester\TestCase {
 		$accessor = new EntityArrayAccessor;
 
 		Assert::throws(function () use ($array, $accessor) {
-			$accessor->getProperty($array, 'email');
-		}, 'Grido\PropertyAccessors\PropertyAccessorException');
+			$accessor->getValue($array, 'email');
+		}, 'Symfony\Component\PropertyAccess\Exception\AccessException');
 
 		Assert::throws(function () use ($array, $accessor) {
-			$accessor->getProperty($array, 'user.name');
-		}, 'Grido\PropertyAccessors\PropertyAccessorException');
+			$accessor->getValue($array, 'user.name');
+		}, 'Symfony\Component\PropertyAccess\Exception\AccessException');
 	}
 
 	function testFetchOnStdClassValue() {
@@ -72,8 +72,8 @@ class PropertyAccessorTest extends Tester\TestCase {
 		$accessor = new EntityArrayAccessor;
 
 		Assert::throws(function () use ($class, $accessor) {
-			$accessor->getProperty($class, 'name');
-		}, 'Grido\PropertyAccessors\PropertyAccessorException');
+			$accessor->getValue($class, 'name');
+		}, 'Symfony\Component\PropertyAccess\Exception\AccessException');
 	}
 
 }

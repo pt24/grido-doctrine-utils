@@ -2,39 +2,46 @@
 
 namespace Esports\Grido;
 
-use Grido\PropertyAccessors\IPropertyAccessor;
-use Grido\PropertyAccessors\PropertyAccessorException;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\PropertyAccess\Exception\AccessException;
 
 /**
  * Accessor pro entity hydratovane jako pole
  */
-class EntityArrayAccessor implements IPropertyAccessor {
+class EntityArrayAccessor implements PropertyAccessorInterface {
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getProperty($array, $name) {
-		if (!is_array($array)) {
-			throw new PropertyAccessorException("Expected array in property accessor!");
+	public function getValue($objectOrArray, $propertyPath) {
+		if (!is_array($objectOrArray)) {
+			throw new AccessException("Expected array in property accessor!");
 		}
 
-		$pos = strpos($name, '.');
+		$pos = strpos($propertyPath, '.');
 
 		if ($pos !== false) {
-			$key = substr($name, 0, $pos);
-			$this->assertKey($array, $key);
-			return $this->getProperty($array[$key], substr($name, $pos + 1));
+			$key = substr($propertyPath, 0, $pos);
+			$this->assertKey($objectOrArray, $key);
+			return $this->getValue($objectOrArray[$key], substr($propertyPath, $pos + 1));
 		}
 
-		$this->assertKey($array, $name);
-		return $array[$name];
+		$this->assertKey($objectOrArray, $propertyPath);
+		return $objectOrArray[$propertyPath];
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function setProperty($object, $name, $value) {
-		throw new PropertyAccessorException("Only reading is allowed!");
+	public function isReadable($objectOrArray, $propertyPath) {
+		try {
+			$this->getValue($objectOrArray, $propertyPath);
+			return true;
+		} catch (Exception $ex) {
+			return false;
+		}
+	}
+
+	public function isWritable($objectOrArray, $propertyPath) {
+		return false;
+	}
+
+	public function setValue(&$objectOrArray, $propertyPath, $value) {
+		throw new AccessException("Only reading is allowed!");
 	}
 
 	/**
@@ -44,7 +51,7 @@ class EntityArrayAccessor implements IPropertyAccessor {
 	 */
 	private function assertKey(array &$array, $key) {
 		if (!array_key_exists($key, $array)) {
-			throw new PropertyAccessorException("Cannot get \"$key\" property. Allowed keys are " . implode(', ', array_keys($array)));
+			throw new AccessException("Cannot get \"$key\" property. Allowed keys are " . implode(', ', array_keys($array)));
 		}
 	}
 
