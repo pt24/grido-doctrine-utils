@@ -15,6 +15,10 @@ class EntityArrayAccessor implements PropertyAccessorInterface {
 			throw new AccessException("Expected array in property accessor!");
 		}
 
+		if (isset($objectOrArray[$propertyPath])) {
+			return $objectOrArray[$propertyPath];
+		}
+
 		$pos = strpos($propertyPath, '.');
 
 		if ($pos !== false) {
