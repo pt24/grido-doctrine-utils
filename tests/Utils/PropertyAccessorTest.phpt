@@ -76,6 +76,41 @@ class PropertyAccessorTest extends Tester\TestCase {
 		}, 'Symfony\Component\PropertyAccess\Exception\AccessException');
 	}
 
+	function testPropertyWithDot() {
+		$array = [ 'user.id' => 5];
+
+		$accessor = new EntityArrayAccessor;
+
+		Assert::same(5, $accessor->getValue($array, 'user.id'));
+	}
+
+	function testWithDotInner() {
+		$array = [
+			'user' => [
+				'name' => 'John',
+				'user.id' => 58
+			]
+		];
+
+		$accessor = new EntityArrayAccessor;
+
+		Assert::same('John', $accessor->getValue($array, 'user.name'));
+		Assert::same(58, $accessor->getValue($array, 'user.user.id'));
+	}
+
+	function testWithDotNotUniquePath() {
+		$array = [
+			'user' => [
+				'id' => 7
+			],
+			'user.id' => 666
+		];
+
+		$accessor = new EntityArrayAccessor;
+
+		Assert::same(666, $accessor->getValue($array, 'user.id'));
+	}
+
 }
 
 $test = new PropertyAccessorTest();
