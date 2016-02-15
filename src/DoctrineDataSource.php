@@ -6,17 +6,25 @@ use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Grido\DataSources\Doctrine;
 
-class DoctrineDataSource extends Doctrine {
+class DoctrineDataSource extends Doctrine
+{
 
-	public function getQuery() {
+	/**
+	 * @var int
+	 */
+	private $hydratationMode = AbstractQuery::HYDRATE_SCALAR;
+
+	public function getQuery()
+	{
 		return parent::getQuery()
-						->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
+				->setHydrationMode($this->hydratationMode);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function getData() {
+	public function getData()
+	{
 		$usePaginator = $this->qb->getMaxResults() !== NULL || $this->qb->getFirstResult() !== NULL;
 		$query = $this->getQuery();
 
@@ -28,4 +36,8 @@ class DoctrineDataSource extends Doctrine {
 		return $query->getResult($query->getHydrationMode());
 	}
 
+	function setHydratationMode($hydratationMode)
+	{
+		$this->hydratationMode = $hydratationMode;
+	}
 }
